@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import sys
 import time
 import urllib
@@ -12,7 +13,9 @@ import BeautifulSoup
 
 import feedparser
 
-DB = couchdb.Server('http://127.0.0.1:5984/')['rpics']
+SERVER = os.getenv("COUCHDB") or 'http://127.0.0.1:5984/'
+
+DB = couchdb.Server(SERVER)['rpics']
 
 ISO8601 = "%Y-%m-%dT%H:%M:%S"
 
