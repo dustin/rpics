@@ -3,6 +3,7 @@
 import os
 import sys
 import time
+import signal
 import urllib
 import base64
 import hashlib
@@ -72,11 +73,13 @@ def handle(sub, e):
 
 if __name__ == '__main__':
     for sub in sys.argv[1:]:
+        signal.alarm(10)
         url = 'http://www.reddit.com/r/' + sub + '/.rss'
         f = feedparser.parse(url)
 
         for e in f.entries:
             try:
+                signal.alarm(30)
                 handle(sub, e)
             except:
                 traceback.print_exc()
