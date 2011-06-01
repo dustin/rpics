@@ -1,6 +1,0 @@
-{
-  "view" : "recent-items",
-  "descending" : "true",
-  "limit" : 100,
-  "include_docs": true
-}
