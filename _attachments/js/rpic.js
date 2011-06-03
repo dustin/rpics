@@ -3,7 +3,7 @@ function rpic_recent_feed(app, target) {
     var Mustache = app.require("vendor/couchapp/lib/mustache");
     var maxItems = 100;
 
-    var template = '<a href="{{full}}"><img title="{{title}}" src="{{thumb}}" /></a>';
+    var template = '<a href="{{link}}"><img title="{{title}}" src="{{thumb}}" /></a>';
     app.db.info({success: function(dbi) {
         var since = Math.max(0, dbi.update_seq - (maxItems + (maxItems * 0.5)));
         console.log("Starting fetch at", since, dbi);
@@ -16,7 +16,7 @@ function rpic_recent_feed(app, target) {
                     var tdata = {
                         title: row.doc.title,
                         thumb: path.attachment(row.id, 'thumb'),
-                        full: path.attachment(row.id, 'full')
+                        link: path.show('image', row.id)
                     };
                     target.prepend(Mustache.to_html(template, tdata));
                     target.find("a:gt(" + maxItems + ")").remove();
