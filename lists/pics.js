@@ -6,7 +6,7 @@ function(head, req) {
 		var row;
 
 		var data = {
-			title: "Favorites",
+			title: "A Bunch of Pictures",
             mainid: "thumblist"
 		};
 
