@@ -6,6 +6,7 @@ import time
 import signal
 import urllib
 import base64
+import random
 import hashlib
 import traceback
 
@@ -72,12 +73,16 @@ def handle(sub, e):
     DB.save(doc)
 
 if __name__ == '__main__':
-    for sub in sys.argv[1:]:
+    subs = sys.argv[1:]
+    random.shuffle(subs)
+    for sub in subs:
         signal.alarm(10)
         url = 'http://www.reddit.com/r/' + sub + '/.rss'
         f = feedparser.parse(url)
 
-        for e in f.entries:
+        entries = f.entries[:]
+        random.shuffle(entries)
+        for e in entries:
             try:
                 signal.alarm(30)
                 handle(sub, e)
