@@ -10,10 +10,14 @@
   <p><a href="{{url}}">{{title}}</a></p>
 
   <p class="state-boring" style="display: {{boring_display}}">
-    <a class="statechange" id="fave-{{_id}}" href="#">Fave</a>
+    <a class="statechange" id="fave-{{_id}}" href="#">
+      <img src="../../images/boring.png" alt="boring" title="Enfavorite"/>
+    </a>
   </p>
   <p class="state-fave" style="display: {{fave_display}}">
-    <a class="statechange" id="boring-{{_id}}" href="#">Boring</a>
+    <a class="statechange" id="boring-{{_id}}" href="#">
+      <img src="../../images/fave.png" alt="fave" title="Make Boring"/>
+    </a>
   </p>
 </body>
 
