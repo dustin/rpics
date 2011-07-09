@@ -8,6 +8,24 @@
   </p>
 
   <p><a href="{{url}}">{{title}}</a></p>
+
+  <p class="state-boring" style="display: {{boring_display}}">
+    <a class="statechange" id="fave-{{_id}}" href="#">Fave</a>
+  </p>
+  <p class="state-fave" style="display: {{fave_display}}">
+    <a class="statechange" id="boring-{{_id}}" href="#">Boring</a>
+  </p>
 </body>
+
+<script src="../../js/prefix-loader.js"></script>
+<script type="text/javascript" charset="utf-8">
+  couchapp_prefix_load("../../");
+</script>
+<script src="../../js/rpic.js"></script>
+<script type="text/javascript" charset="utf-8">
+  $.couch.app(function(app) {
+    rpic_init_update_links(app);
+  });
+</script>
 
 </html>

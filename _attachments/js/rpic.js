@@ -25,3 +25,27 @@ function rpic_recent_feed(app, target) {
         });
     }});
 }
+
+function rpic_init_update_links(app) {
+    var baseUri = app.db.uri;
+    var ddoc = app.ddoc._id;
+
+    $(".statechange").each(function(a, el) {
+        var parts = el.id.split('-');
+        $(el).click(function() {
+            $.ajax({type: 'POST',
+                    url: baseUri + ddoc + "/_update/set_state/" + parts[1],
+                    data: 'new_state=' + encodeURIComponent(parts[0]),
+                    dataType: "json",
+                    complete: function(res) {
+                        var new_state = parts[0];
+                        var old_state = new_state === 'fave' ? 'boring' : 'fave';
+                        $(".state-" + new_state).show();
+                        $(".state-" + old_state).hide();
+                        console.log("Result", res, old_state, "->", new_state);
+                    }});
+
+            return false;
+        });
+    });
+}
