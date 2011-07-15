@@ -1,3 +1,6 @@
+var rpicChangeFeed = undefined;
+var rpicDisplayed = { };
+
 function rpic_recent_feed(app, target) {
     var path = app.require("vendor/couchapp/lib/path").init(app.req);
     var Mustache = app.require("vendor/couchapp/lib/mustache");
@@ -8,11 +11,12 @@ function rpic_recent_feed(app, target) {
         var since = Math.max(0, dbi.update_seq - (maxItems + (maxItems * 0.5)));
         console.log("Starting fetch at", since, dbi);
 
-        var changeFeed = app.db.changes(since, {"include_docs": true});
-        changeFeed.onChange(function(data) {
+        rpicChangeFeed = app.db.changes(since, {"include_docs": true});
+        rpicChangeFeed.onChange(function(data) {
             var nItems = 0;
             data.results.forEach(function(row) {
-                if (row.doc['_attachments'] && row.doc._attachments['thumb']) {
+                if (!rpicDisplayed[row.id] && row.doc['_attachments'] && row.doc._attachments['thumb']) {
+                    rpicDisplayed[row.id] = true;
                     var tdata = {
                         title: row.doc.title,
                         thumb: path.attachment(row.id, 'thumb'),
@@ -23,7 +27,32 @@ function rpic_recent_feed(app, target) {
                 }
             });
         });
+
     }});
+}
+
+function rpic_feed_toggle(app, target) {
+    setTimeout(function() {
+        if (document.webkitHidden) {
+            if (rpicChangeFeed) {
+                console.log("Stopping the feed.");
+                rpicChangeFeed.stop();
+                rpicChangeFeed = undefined;
+            }
+        } else {
+            if (!rpicChangeFeed) {
+                console.log("Starting the feed.");
+                rpic_recent_feed(app, target);
+            }
+        }
+    }, 100);
+}
+
+function rpic_init_feed(app, target) {
+    document.addEventListener('webkitvisibilitychange', function(e) {
+        rpic_feed_toggle(app, target);
+    }, false);
+    rpic_feed_toggle(app, target);
 }
 
 function rpic_init_update_links(app) {
