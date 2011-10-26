@@ -50,13 +50,7 @@ function rpic_feed_toggle(app, target) {
     }, 100);
 }
 
-function rpic_init_feed(app, target) {
-    document.addEventListener('webkitvisibilitychange', function(e) {
-        rpic_feed_toggle(app, target);
-    }, false);
-    rpic_feed_toggle(app, target);
-
-    console.log("Setting up delete visible link.");
+function rpic_init_delete(app) {
     $("#delete-visible").click(function() {
         $(".state-boring").each(function(a, el) {
             var parts = el.id.split('/');
@@ -72,7 +66,14 @@ function rpic_init_feed(app, target) {
         });
         return false;
     });
-    console.log("done.");
+}
+
+function rpic_init_feed(app, target) {
+    document.addEventListener('webkitvisibilitychange', function(e) {
+        rpic_feed_toggle(app, target);
+    }, false);
+    rpic_feed_toggle(app, target);
+    rpic_init_delete(app);
 }
 
 function rpic_init_update_links(app) {
@@ -97,4 +98,6 @@ function rpic_init_update_links(app) {
             return false;
         });
     });
+
+    rpic_init_delete(app);
 }
