@@ -158,7 +158,7 @@ func process(db *couch.Database, p Posting, wg *sync.WaitGroup) {
 	log.Printf("Processing %v", p.Title)
 
 	m := md5.New()
-	io.WriteString(m, p.Title)
+	io.WriteString(m, p.Permalink)
 	docid := fmt.Sprintf("%x", m.Sum(nil))
 
 	if p.Thumbnail == "" {
