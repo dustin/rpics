@@ -203,9 +203,7 @@ func process(db *couch.Database, p Posting, wg *sync.WaitGroup) {
 	}
 }
 
-func grabStuff(db *couch.Database, sub string, wg *sync.WaitGroup) error {
-	defer wg.Done()
-
+func grabStuff(db *couch.Database, sub string) error {
 	url := "http://www.reddit.com/r/" + sub + "/.json"
 	resp, err := http.Get(url)
 	if err != nil {
@@ -222,12 +220,12 @@ func grabStuff(db *couch.Database, sub string, wg *sync.WaitGroup) error {
 		return err
 	}
 
-	wgp := sync.WaitGroup{}
-	wgp.Add(len(posting))
+	wg := sync.WaitGroup{}
+	wg.Add(len(posting))
 	for _, p := range posting {
-		go process(db, p, &wgp)
+		go process(db, p, &wg)
 	}
-	wgp.Wait()
+	wg.Wait()
 	return nil
 }
 
@@ -245,7 +243,8 @@ func main() {
 	for _, s := range os.Args[1:] {
 		wg.Add(1)
 		go func() {
-			err := grabStuff(&db, s, &wg)
+			defer wg.Done()
+			err := grabStuff(&db, s)
 			log.Printf("Got %v for %v", err, s)
 		}()
 	}
