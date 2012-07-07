@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"strings"
 	"sync"
 	"time"
@@ -240,7 +239,7 @@ func main() {
 	}
 
 	wg := sync.WaitGroup{}
-	for _, s := range os.Args[1:] {
+	for _, s := range flag.Args() {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
