@@ -37,8 +37,6 @@ func (m *myRT) RoundTrip(req *http.Request) (resp *http.Response, err error) {
 			st := w.Sub(time.Now())
 			log.Printf("Waiting %v to request %v", st, req.URL)
 			time.Sleep(st)
-		} else {
-			log.Printf("Immediately handling request for %v", req.URL.Host)
 		}
 		if strings.Contains(req.URL.Host, "reddit.com") {
 			m.delays[req.URL.Host] = time.Now().Add(time.Second * 2)
@@ -123,7 +121,6 @@ func getImage(p Posting) (Image, error) {
 	} else if strings.Contains(p.Domain, "flickr.com") {
 		return getImageFlickr(p)
 	} else {
-		log.Printf("%v is NOT from imgur, but %v", p.URL, p.Domain)
 		return getImageRaw(p.URL)
 	}
 	return Image{}, nil
