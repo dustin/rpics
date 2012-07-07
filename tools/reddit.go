@@ -8,7 +8,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -20,6 +19,7 @@ import (
 
 var couchURL = flag.String("couchdb", "http://localhost:5984/rpics2",
 	"The CouchDB into which we store all the things.")
+var syslogFlag = flag.Bool("syslog", false, "Log to syslog")
 
 type myRT struct {
 	rt     http.RoundTripper
@@ -236,6 +236,8 @@ func grabStuff(db *couch.Database, sub string, wg *sync.WaitGroup) error {
 
 func main() {
 	flag.Parse()
+
+	setupLogging(*syslogFlag)
 
 	db, err := couch.Connect(*couchURL)
 	if err != nil {
