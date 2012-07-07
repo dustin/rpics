@@ -10,9 +10,7 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
-	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -121,30 +119,9 @@ func getImageRaw(u string) (Image, error) {
 
 func getImage(p Posting) (Image, error) {
 	if strings.Contains(p.Domain, "imgur.com") {
-		u, err := url.Parse(p.URL)
-		if err != nil {
-			return Image{}, err
-		}
-		cleanp := filepath.Base(u.Path)
-		iuh := strings.Split(cleanp, ".")
-
-		imguru := fmt.Sprintf("http://api.imgur.com/2/image/%v.json", iuh[0])
-		resp, err := http.Get(imguru)
-		if err != nil {
-			return Image{}, err
-		}
-		defer resp.Body.Close()
-
-		imgu, err := parseImgUr(resp.Body)
-		if err != nil {
-			return Image{}, err
-		}
-
-		rv, err := getImageRaw(imgu.Links.Original)
-		if err == nil {
-			rv.ContentType = imgu.Image.Type
-		}
-		return rv, err
+		return getImageImgur(p)
+	} else if strings.Contains(p.Domain, "flickr.com") {
+		return getImageFlickr(p)
 	} else {
 		log.Printf("%v is NOT from imgur, but %v", p.URL, p.Domain)
 		return getImageRaw(p.URL)
