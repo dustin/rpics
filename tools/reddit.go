@@ -177,10 +177,16 @@ func process(db *couch.Database, p Posting, wg *sync.WaitGroup) {
 			p, img.ContentType)
 		return
 	}
-	thumb, err := getImageRaw(p.Thumbnail)
-	if err != nil {
-		log.Printf("Error getting thumbnail from %#v, %v", p, err)
-		return
+	var thumb Image
+	if p.Thumbnail == "nsfw" {
+		thumb.Encoded = nsfw_png_b64
+		thumb.ContentType = "image/png"
+	} else {
+		thumb, err = getImageRaw(p.Thumbnail)
+		if err != nil {
+			log.Printf("Error getting thumbnail from %#v, %v", p, err)
+			return
+		}
 	}
 	log.Printf("Got %v bytes of image and %v of thumbnail",
 		len(img.Encoded), len(thumb.Encoded))
