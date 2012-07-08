@@ -241,11 +241,11 @@ func main() {
 	wg := sync.WaitGroup{}
 	for _, s := range flag.Args() {
 		wg.Add(1)
-		go func() {
+		go func(which string) {
 			defer wg.Done()
-			err := grabStuff(&db, s)
+			err := grabStuff(&db, which)
 			log.Printf("Got %v for %v", err, s)
-		}()
+		}(s)
 	}
 	wg.Wait()
 }
