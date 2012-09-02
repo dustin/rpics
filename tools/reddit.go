@@ -19,6 +19,8 @@ import (
 var couchURL = flag.String("couchdb", "http://localhost:5984/rpics2",
 	"The CouchDB into which we store all the things.")
 var syslogFlag = flag.Bool("syslog", false, "Log to syslog")
+var watchdog = flag.Duration("watchdog", 5*time.Minute,
+	"Maximum amount of time permitted to run")
 
 type myRT struct {
 	rt     http.RoundTripper
@@ -236,6 +238,10 @@ func grabStuff(db *couch.Database, sub string) error {
 
 func main() {
 	flag.Parse()
+
+	time.AfterFunc(*watchdog, func() {
+		log.Fatalf("Watchdog firing, taking too long.")
+	})
 
 	setupLogging(*syslogFlag)
 
