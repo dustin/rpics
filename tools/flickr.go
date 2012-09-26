@@ -30,10 +30,12 @@ func parseFlickr(r io.Reader) (rv string, err error) {
 				return
 			}
 		}
-		for _, c := range n.Child {
+		child := n.FirstChild
+		for child != nil {
 			if rv == "" {
-				f(c)
+				f(child)
 			}
+			child = child.NextSibling
 		}
 	}
 	f(doc)

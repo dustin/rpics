@@ -256,7 +256,7 @@ func main() {
 		go func(which string) {
 			defer wg.Done()
 			err := grabStuff(&db, which)
-			log.Printf("Got %v for %v", err, s)
+			log.Printf("Got %v for %v", err, which)
 		}(s)
 	}
 	wg.Wait()
