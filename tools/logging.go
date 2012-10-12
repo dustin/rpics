@@ -10,11 +10,11 @@ var log *baselog.Logger
 
 func setupLogging(useSyslog bool) {
 	if useSyslog {
-		var err error
-		log, err = syslog.NewLogger(syslog.LOG_INFO, 0)
+		lw, err := syslog.New(syslog.LOG_INFO, "rpics")
 		if err != nil {
 			baselog.Fatalf("Error initializing logging: %v", err)
 		}
+		baselog.New(lw, "", 0)
 	} else {
 		log = baselog.New(os.Stderr, "", baselog.LstdFlags)
 	}
