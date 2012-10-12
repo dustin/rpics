@@ -14,7 +14,7 @@ func setupLogging(useSyslog bool) {
 		if err != nil {
 			baselog.Fatalf("Error initializing logging: %v", err)
 		}
-		baselog.New(lw, "", 0)
+		log = baselog.New(lw, "", 0)
 	} else {
 		log = baselog.New(os.Stderr, "", baselog.LstdFlags)
 	}
