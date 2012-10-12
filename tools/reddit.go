@@ -146,7 +146,7 @@ func hasDoc(db *couch.Database, docid string) bool {
 	doc := map[string]interface{}{}
 	err := db.Retrieve(docid, &doc)
 	if err != nil {
-		log.Printf("Hasdoc:  %v", err)
+		log.Printf("Hasdoc %v:  %v", docid, err)
 	}
 	return err == nil
 }
@@ -165,7 +165,6 @@ func process(db *couch.Database, p Posting, wg *sync.WaitGroup) {
 	}
 
 	if hasDoc(db, docid) {
-		log.Printf("Already have %v", p.Title)
 		return
 	}
 
