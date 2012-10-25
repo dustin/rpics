@@ -146,14 +146,15 @@ func hasDoc(db *couch.Database, docid string) bool {
 	doc := map[string]interface{}{}
 	err := db.Retrieve(docid, &doc)
 	if err != nil {
-		log.Printf("Hasdoc %v:  %v", docid, err)
+		if !strings.Contains(err.Error(), "404") {
+			log.Printf("Hasdoc %v:  %v", docid, err)
+		}
 	}
 	return err == nil
 }
 
 func process(db *couch.Database, p Posting, wg *sync.WaitGroup) {
 	defer wg.Done()
-	log.Printf("Processing %v", p.Title)
 
 	m := md5.New()
 	io.WriteString(m, p.Permalink)
@@ -170,7 +171,9 @@ func process(db *couch.Database, p Posting, wg *sync.WaitGroup) {
 
 	img, err := getImage(p)
 	if err != nil {
-		log.Printf("Error getting image %v", err)
+		if err != noFlickrUrl {
+			log.Printf("Error getting image %v", err)
+		}
 		return
 	}
 	if !strings.HasPrefix(img.ContentType, "image/") {
@@ -255,7 +258,9 @@ func main() {
 		go func(which string) {
 			defer wg.Done()
 			err := grabStuff(&db, which)
-			log.Printf("Got %v for %v", err, which)
+			if err != nil {
+				log.Printf("Got %v for %v", err, which)
+			}
 		}(s)
 	}
 	wg.Wait()

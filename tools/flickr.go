@@ -7,6 +7,8 @@ import (
 	"net/http"
 )
 
+var noFlickrUrl = errors.New("Flickr URL not found")
+
 func parseFlickr(r io.Reader) (rv string, err error) {
 	doc, err := html.Parse(r)
 	if err != nil {
@@ -40,7 +42,7 @@ func parseFlickr(r io.Reader) (rv string, err error) {
 	}
 	f(doc)
 	if rv == "" {
-		err = errors.New("Flickr URL not found")
+		err = noFlickrUrl
 	}
 	return rv, err
 }
